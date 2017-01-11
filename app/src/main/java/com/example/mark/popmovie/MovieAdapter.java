@@ -1,14 +1,19 @@
 package com.example.mark.popmovie;
 
+import android.content.Intent;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mark.popmovie.model.Movie;
 
 import java.util.ArrayList;
+
+import static android.R.attr.start;
 
 /**
  * Created by mark on 1/11/17.
@@ -26,20 +31,33 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-                class MovieViewHolder extends RecyclerView.ViewHolder
+                class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
                 {
                     TextView textView;
                     public MovieViewHolder(View view)
                     {
                         super(view);
                         textView = (TextView) view.findViewById(R.id.tv_movie_text);
+                        view.setOnClickListener(this);
                     }
 
                     public void bind(String s)
                     {
                         textView.setText(s);
                     }
+
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(view.getContext(), "clicked", Toast.LENGTH_SHORT).show();
+
+                        Intent movieDetailIntent = new Intent(view.getContext(), MovieDetailActivity.class);
+                        //movieDetailIntent.putExtras();
+                        view.getContext().startActivity(movieDetailIntent);
+
+                    }
                 }
+
+
 
     @Override
     public int getItemCount() {
