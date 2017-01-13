@@ -1,7 +1,6 @@
 package com.example.mark.popmovie;
 
 import android.content.Intent;
-import android.support.v4.app.ShareCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +11,6 @@ import android.widget.Toast;
 import com.example.mark.popmovie.model.Movie;
 
 import java.util.ArrayList;
-
-import static android.R.attr.start;
 
 /**
  * Created by mark on 1/11/17.
@@ -34,6 +31,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
                 {
                     TextView textView;
+                    Movie movie;
+
                     public MovieViewHolder(View view)
                     {
                         super(view);
@@ -41,19 +40,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                         view.setOnClickListener(this);
                     }
 
-                    public void bind(String s)
+                    public void bind(Movie m)
                     {
-                        textView.setText(s);
+                        textView.setText(m.getTitle() + "(" + m.getRating() + ")");
+                        movie = m;
                     }
 
                     @Override
                     public void onClick(View view) {
                         Toast.makeText(view.getContext(), "clicked", Toast.LENGTH_SHORT).show();
-
                         Intent movieDetailIntent = new Intent(view.getContext(), MovieDetailActivity.class);
-                        //movieDetailIntent.putExtras();
+                        movieDetailIntent.putExtra("MOVIE", movie);
                         view.getContext().startActivity(movieDetailIntent);
-
                     }
                 }
 
@@ -88,6 +86,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      */
     @Override
     public void onBindViewHolder(MovieViewHolder holder, int position) {
-        holder.bind(movies.get(position).getTitle());
+        holder.bind(movies.get(position));
     }
 }

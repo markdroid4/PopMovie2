@@ -1,19 +1,25 @@
 package com.example.mark.popmovie.model;
 
-import static android.R.attr.rating;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mark on 1/11/17.
  */
 
-public class Movie {
+public class Movie implements Parcelable {
 
     private String title;
-    private int rating;
+    private float rating;
     private String imagePath;
     private String overview;
+    //private List<String> actors;
 
-    public Movie(String title, int rating, String imagePath, String overview) {
+
+    public Movie(String title, float rating, String imagePath, String overview) {
         this.title = title;
         this.rating = rating;
         this.imagePath = imagePath;
@@ -28,11 +34,11 @@ public class Movie {
         this.title = title;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -51,4 +57,42 @@ public class Movie {
     public void setOverview(String overview) {
         this.overview = overview;
     }
+
+    private Movie(Parcel in)
+    {
+        this.title = in.readString();
+        this.rating = in.readFloat();
+        this.imagePath = in.readString();
+        this.overview = in.readString();
+        //this.actors = new ArrayList<>();
+        //in.readTypedList(actors, );
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(title);
+        parcel.writeFloat(rating);
+        parcel.writeString(imagePath);
+        parcel.writeString(overview);
+
+    }
+
+    public final static Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
+    {
+        @Override
+        public Movie createFromParcel(Parcel parcel) {
+            return new Movie(parcel);
+        }
+
+        @Override
+        public Movie[] newArray(int i) {
+            return new Movie[0];
+        }
+    };
 }
