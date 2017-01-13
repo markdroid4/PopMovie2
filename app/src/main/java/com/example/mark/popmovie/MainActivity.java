@@ -11,6 +11,10 @@ import android.util.Log;
 
 import com.example.mark.popmovie.model.Movie;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -18,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import static android.media.CamcorderProfile.get;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,9 +57,29 @@ public class MainActivity extends AppCompatActivity {
         return movies;
     }
 
+    public ArrayList<Movie> createMovieListFromJSON(String json) throws JSONException
+    {
+        JSONObject obj = new JSONObject(json);
+
+        JSONArray results = (JSONArray) obj.get("results");
+        Log.d("INFO", "Movies found: " + results.length());
+
+        for (int i=0; i < results.length(); i++)
+        {
+            JSONObject jsonMovie = (JSONObject) results.get(i);
+            String img = jsonMovie.getString("poster_path");
+            String title = jsonMovie.getString("title");
+            String overview = jsonMovie.getString("overview");
+
+            Movie movie = new Movie(title, 3.8f, img, overview);
+            movies.add(movie);
+        }
+        return movies;
+
+    }
+
     class LoadMoviesTask extends AsyncTask {
 
-        //public com.example.mark.popmovie.LoadMoviesTask.AsyncResponse delegate = null;
         private Context context;
         private final String TMDB_URL = "https://api.themoviedb.org/3/discover/movie?";
         private String apiKey;
@@ -129,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
                 result = getResponseFromHttpUrl(url);
 
+                movies = createMovieListFromJSON(result);
 
 
             } catch (Exception e) {
@@ -151,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(gridLayoutManager);
-            movieAdapter = new MovieAdapter(getSampleData());
+            movieAdapter = new MovieAdapter(movies);
             recyclerView.setAdapter(movieAdapter);
         }
 
@@ -170,7 +197,5 @@ public class MainActivity extends AppCompatActivity {
             super.onCancelled();
         }
 
-        //private class AsyncResponse {
-        //}
     }
 }
