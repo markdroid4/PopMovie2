@@ -23,8 +23,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static android.media.CamcorderProfile.get;
-
 public class MainActivity extends AppCompatActivity {
 
     private static final int GRID_COLUMNS = 2;
@@ -40,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
         LoadMoviesTask getMovies = new LoadMoviesTask(this);
         getMovies.execute();
-
-
-
     }
 
     public ArrayList<Movie> getSampleData()
@@ -60,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     public ArrayList<Movie> createMovieListFromJSON(String json) throws JSONException
     {
         JSONObject obj = new JSONObject(json);
-
         JSONArray results = (JSONArray) obj.get("results");
         Log.d("INFO", "Movies found: " + results.length());
 
@@ -178,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
             recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(gridLayoutManager);
-            movieAdapter = new MovieAdapter(movies);
+            movieAdapter = new MovieAdapter(context, movies);
             recyclerView.setAdapter(movieAdapter);
         }
 

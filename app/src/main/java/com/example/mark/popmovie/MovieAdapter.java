@@ -1,14 +1,18 @@
 package com.example.mark.popmovie;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mark.popmovie.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -18,10 +22,12 @@ import java.util.ArrayList;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
 
+    private Context context;
     private ArrayList<Movie> movies;
 
-    MovieAdapter(ArrayList<Movie> movies)
+    MovieAdapter(Context context, ArrayList<Movie> movies)
     {
+        this.context = context;
         if (movies == null)
             throw new IllegalArgumentException("Movie list cannot be null");
         this.movies = movies;
@@ -31,18 +37,24 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                 class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
                 {
                     TextView textView;
+                    ImageView imageView;
                     Movie movie;
 
                     public MovieViewHolder(View view)
                     {
                         super(view);
-                        textView = (TextView) view.findViewById(R.id.tv_movie_text);
+                        //imageView = (ImageView) view.findViewById(R.id.iv_movie_poster);
+                        textView = (TextView) view.findViewById(R.id.tv_movie_poster);
                         view.setOnClickListener(this);
                     }
 
                     public void bind(Movie m)
                     {
-                        textView.setText(m.getTitle() + "(" + m.getRating() + ")");
+                        Log.d("INFO", m.getImgPrefix()+m.getImagePath());
+                        textView.setText(m.getTitle());
+// Picasso.with(context).load(m.getImgPrefix()+m.getImagePath()).into(imageView);
+                        //if (m.getImagePath() != null)
+                        //    Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
                         movie = m;
                     }
 

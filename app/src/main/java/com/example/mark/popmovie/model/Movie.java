@@ -16,8 +16,13 @@ public class Movie implements Parcelable {
     private float rating;
     private String imagePath;
     private String overview;
+    private final String imgPrefix = "http://image.tmdb.org/t/p/w185";
     //private List<String> actors;
 
+
+    public String getImgPrefix() {
+        return imgPrefix;
+    }
 
     public Movie(String title, float rating, String imagePath, String overview) {
         this.title = title;
