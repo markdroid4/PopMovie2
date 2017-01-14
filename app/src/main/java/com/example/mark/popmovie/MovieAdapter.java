@@ -43,24 +43,20 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     public MovieViewHolder(View view)
                     {
                         super(view);
-                        //imageView = (ImageView) view.findViewById(R.id.iv_movie_poster);
-                        textView = (TextView) view.findViewById(R.id.tv_movie_poster);
+                        imageView = (ImageView) view.findViewById(R.id.iv_movie_poster);
                         view.setOnClickListener(this);
                     }
 
-                    public void bind(Movie m)
-                    {
-                        Log.d("INFO", m.getImgPrefix()+m.getImagePath());
-                        textView.setText(m.getTitle());
-// Picasso.with(context).load(m.getImgPrefix()+m.getImagePath()).into(imageView);
-                        //if (m.getImagePath() != null)
-                        //    Picasso.with(context).load("http://i.imgur.com/DvpvklR.png").into(imageView);
+                    public void bind(Movie m) {
+                        Log.d("INFO", m.getImgPrefix() + m.getImagePath());
                         movie = m;
+                        Picasso.with(context).load(m.getImgPrefix() + m.getImagePath())
+                                .placeholder(R.mipmap.ic_launcher) //will not work without this -??
+                                .into(imageView);
                     }
 
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(view.getContext(), "clicked", Toast.LENGTH_SHORT).show();
                         Intent movieDetailIntent = new Intent(view.getContext(), MovieDetailActivity.class);
                         movieDetailIntent.putExtra("MOVIE", movie);
                         view.getContext().startActivity(movieDetailIntent);

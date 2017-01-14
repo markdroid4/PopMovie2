@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mark.popmovie.model.Movie;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -22,14 +23,18 @@ public class MovieDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
-        overview = (TextView) findViewById(R.id.tv_sample);
-//      imageView = (ImageView) findViewById(R.id.iv_movie_poster);
+        overview = (TextView) findViewById(R.id.tv_overview);
+        imageView = (ImageView) findViewById(R.id.iv_movie_detail_poster);
         Intent caller = getIntent();
         if (caller.hasExtra("MOVIE"))
         {
             movie = (Movie) caller.getParcelableExtra("MOVIE");
-            if (movie != null)
+            if (movie != null) {
                 overview.setText(movie.getOverview());
+                Picasso.with(this).load(movie.getImgPrefix() + movie.getImagePath())
+                        .placeholder(R.mipmap.ic_launcher)
+                        .into(imageView);
+            }
         }
     }
 }

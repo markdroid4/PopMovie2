@@ -11,12 +11,12 @@
     tools:context="com.example.mark.popmovie.MovieDetailActivity">
 
     <ImageView
-        android:id="@+id/iv_movie_poster"
+        android:id="@+id/iv_movie_detail_poster"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/tv_sample"
+        android:id="@+id/tv_overview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
