@@ -31,7 +31,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             movie = (Movie) caller.getParcelableExtra("MOVIE");
             if (movie != null) {
                 overview.setText(movie.getOverview());
-                Picasso.with(this).load(movie.getImgPrefix() + movie.getImagePath())
+                Picasso.with(this).load(movie.getImgPrefix("w500") + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);
             }

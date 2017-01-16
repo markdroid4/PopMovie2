@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.mark.popmovie.model.Movie;
 import com.squareup.picasso.Picasso;
@@ -48,10 +47,10 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     }
 
                     public void bind(Movie m) {
-                        Log.d("INFO", m.getImgPrefix() + m.getImagePath());
+                        Log.d("INFO", m.getImagePath());
                         movie = m;
-                        Picasso.with(context).load(m.getImgPrefix() + m.getImagePath())
-                                .placeholder(R.mipmap.ic_launcher) //will not work without this -??
+                        Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
+                                .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
                                 .into(imageView);
                     }
 

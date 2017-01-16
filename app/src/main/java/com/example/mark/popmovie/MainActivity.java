@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 import com.example.mark.popmovie.model.Movie;
 
@@ -23,10 +27,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class MainActivity extends AppCompatActivity {
+import static android.R.string.no;
+
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final int GRID_COLUMNS = 2;
 
+    private Spinner sortSpin;
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movies = new ArrayList<>();
@@ -35,9 +42,47 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        sortSpin = (Spinner) findViewById(R.id.spin_sort);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.sort_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpin.setOnItemSelectedListener(this);
+        sortSpin.setAdapter(adapter);
 
-        LoadMoviesTask getMovies = new LoadMoviesTask(this);
+        loadMovies(this, "popular");
+
+    }
+
+    /**
+     * Load the movie API in a background thread, via AsynchTask
+     * @param context
+     * @param endPoint
+     */
+    public void loadMovies(Context context, String endPoint)
+    {
+        movies = new ArrayList<>();
+        LoadMoviesTask getMovies = new LoadMoviesTask(context, endPoint);
         getMovies.execute();
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
+
+        Log.d("INFO", "SPINNER SELECTED");
+        String endPoint="";
+        String item = (String) adapterView.getItemAtPosition(pos);
+        if (item.equals("Most Popular")) {
+            endPoint = "popular";
+        } else {
+            endPoint = "top_rated";
+        }
+        loadMovies(this, endPoint);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+        Log.d("INFO", "nothing selected");
     }
 
     public ArrayList<Movie> getSampleData()
@@ -75,17 +120,19 @@ public class MainActivity extends AppCompatActivity {
     class LoadMoviesTask extends AsyncTask {
 
         private Context context;
-        private final String TMDB_URL = "https://api.themoviedb.org/3/discover/movie?";
+        // /movie/popular
+        // /movie/top_rated
+        //private final String TMDB_URL = "https://api.themoviedb.org/3/discover/movie?";
+        private final String TMDB_URL = "https://api.themoviedb.org/3/movie/";
         private String apiKey;
-
+        private String endPoint = "";
 
         final String PARAM_API = "api_key";
-        final String PARAM_SORT = "sort_by";
-        final String sortBy = "vote_average.desc";
 
-        public LoadMoviesTask(Context context) {
+        public LoadMoviesTask(Context context, String endPoint) {
             super();
             this.context = context;
+            this.endPoint = endPoint;
             apiKey = context.getString(R.string.api_key);
         }
 
@@ -93,13 +140,13 @@ public class MainActivity extends AppCompatActivity {
         /**
          * Builds the URL used to query TMDB.
          *
-         * @param sortBy the criteria
-         * @return The URL to use fo
+         * @param endPoint
+         * @return The URL to use
          */
-        public URL buildUrl(String sortBy) {
-            Uri builtUri = Uri.parse(TMDB_URL).buildUpon()
+        public URL buildUrl(String endPoint) {
+            Uri builtUri = Uri.parse(TMDB_URL + endPoint).buildUpon()
                     .appendQueryParameter(PARAM_API, apiKey)
-                    .appendQueryParameter(PARAM_SORT, sortBy)
+                    //.appendQueryParameter(PARAM_SORT, sortBy)
                     .build();
 
             URL url = null;
@@ -120,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
          * @throws IOException Related to network and stream reading
          */
         public String getResponseFromHttpUrl(URL url) throws IOException {
+            Log.d("INFO", "Loading URL: " + url);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 InputStream in = urlConnection.getInputStream();
@@ -145,12 +193,9 @@ public class MainActivity extends AppCompatActivity {
             String result = null;
             try {
 
-                URL url = buildUrl(sortBy);
-
+                URL url = buildUrl(endPoint);
                 result = getResponseFromHttpUrl(url);
-
                 movies = createMovieListFromJSON(result);
-
 
             } catch (Exception e) {
                 e.printStackTrace();

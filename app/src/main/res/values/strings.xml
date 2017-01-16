@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">PopMovie</string>
+    <string-array name="sort_types">
+        <item>Most Popular</item>
+        <item>Top Rated</item>
+    </string-array>
 </resources>

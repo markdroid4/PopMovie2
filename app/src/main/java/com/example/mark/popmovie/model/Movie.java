@@ -16,12 +16,18 @@ public class Movie implements Parcelable {
     private float rating;
     private String imagePath;
     private String overview;
-    private final String imgPrefix = "http://image.tmdb.org/t/p/w185";
+    private final String imgPrefix = "http://image.tmdb.org/t/p/";
     //private List<String> actors;
 
 
-    public String getImgPrefix() {
-        return imgPrefix;
+    /**
+     * Size can be specified per TMDB settings:
+     * "w92", "w154", "w185", "w342", "w500", "w780", or "original"
+     * @param size
+     * @return
+     */
+    public String getImgPrefix(String size) {
+        return imgPrefix + size;
     }
 
     public Movie(String title, float rating, String imagePath, String overview) {
