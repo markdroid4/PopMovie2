@@ -15,22 +15,27 @@ import org.w3c.dom.Text;
 public class MovieDetailActivity extends AppCompatActivity {
 
     private Movie movie;
-    private TextView overview;
+    private TextView movieTitleText;
+    private TextView movieDateText;
+    private TextView movieOverviewText;
     private ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-
-        overview = (TextView) findViewById(R.id.tv_overview);
+        movieTitleText = (TextView) findViewById(R.id.tv_movie_title);
+        movieDateText = (TextView) findViewById(R.id.tv_movie_date);
+        movieOverviewText = (TextView) findViewById(R.id.tv_overview);
         imageView = (ImageView) findViewById(R.id.iv_movie_detail_poster);
         Intent caller = getIntent();
         if (caller.hasExtra("MOVIE"))
         {
             movie = (Movie) caller.getParcelableExtra("MOVIE");
             if (movie != null) {
-                overview.setText(movie.getOverview());
+                movieOverviewText.setText(movie.getOverview());
+                movieTitleText.setText(movie.getTitle() + " (Rating: " + movie.getRating() + ")");
+                movieDateText.setText(movie.getReleaseDate());
                 Picasso.with(this).load(movie.getImgPrefix("w500") + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);

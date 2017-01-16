@@ -13,10 +13,11 @@ import java.util.List;
 public class Movie implements Parcelable {
 
     private String title;
-    private float rating;
+    private String rating;
+    private String releaseDate;
     private String imagePath;
     private String overview;
-    private final String imgPrefix = "http://image.tmdb.org/t/p/";
+    private final String IMAGE_PREFIX = "http://image.tmdb.org/t/p/";
     //private List<String> actors;
 
 
@@ -27,14 +28,16 @@ public class Movie implements Parcelable {
      * @return
      */
     public String getImgPrefix(String size) {
-        return imgPrefix + size;
+        return IMAGE_PREFIX + size;
     }
 
-    public Movie(String title, float rating, String imagePath, String overview) {
+    public Movie(String title, String rating, String imagePath, String overview,
+                 String releaseDate) {
         this.title = title;
         this.rating = rating;
         this.imagePath = imagePath;
         this.overview = overview;
+        this.releaseDate = releaseDate;
     }
 
     public String getTitle() {
@@ -45,11 +48,19 @@ public class Movie implements Parcelable {
         this.title = title;
     }
 
-    public float getRating() {
+    public String getRating() {
         return rating;
     }
 
-    public void setRating(float rating) {
+    public String getReleaseDate() {
+        return releaseDate;
+    }
+
+    public void setReleaseDate(String releaseDate) {
+        this.releaseDate = releaseDate;
+    }
+
+    public void setRating(String rating) {
         this.rating = rating;
     }
 
@@ -72,9 +83,10 @@ public class Movie implements Parcelable {
     private Movie(Parcel in)
     {
         this.title = in.readString();
-        this.rating = in.readFloat();
+        this.rating = in.readString();
         this.imagePath = in.readString();
         this.overview = in.readString();
+        this.releaseDate = in.readString();
         //this.actors = new ArrayList<>();
         //in.readTypedList(actors, );
     }
@@ -88,10 +100,10 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(title);
-        parcel.writeFloat(rating);
+        parcel.writeString(rating);
         parcel.writeString(imagePath);
         parcel.writeString(overview);
-
+        parcel.writeString(releaseDate);
     }
 
     public final static Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()

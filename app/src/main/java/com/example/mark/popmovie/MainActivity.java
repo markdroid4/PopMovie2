@@ -107,19 +107,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-        Log.d("INFO", "nothing selected");
-    }
-
-    public ArrayList<Movie> getSampleData()
-    {
-        ArrayList<Movie> movies = new ArrayList<>();
-        for (int i=0; i < 240; i++)
-        {
-            Movie m = new Movie("Bad Santa", 3.8f, "/img/path", "Lying, cheating, stealing Santa " +
-                    "Claus. Coming to mall near you.");
-            movies.add(m);
-        }
-        return movies;
     }
 
     public ArrayList<Movie> createMovieListFromJSON(String json) throws JSONException
@@ -132,10 +119,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             JSONObject jsonMovie = (JSONObject) results.get(i);
             String img = jsonMovie.getString("poster_path");
-            String title = jsonMovie.getString("title");
+            String title = jsonMovie.getString("original_title");
             String overview = jsonMovie.getString("overview");
+            String rating = jsonMovie.getString("vote_average");
+            String releaseDate = jsonMovie.getString("release_date");
 
-            Movie movie = new Movie(title, 3.8f, img, overview);
+            Movie movie = new Movie(title, rating, img, overview, releaseDate);
             movies.add(movie);
         }
         return movies;
