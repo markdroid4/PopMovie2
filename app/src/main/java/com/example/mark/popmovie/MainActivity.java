@@ -1,6 +1,9 @@
 package com.example.mark.popmovie;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -12,12 +15,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.mark.popmovie.model.Movie;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import static android.R.string.no;
+import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -37,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movies = new ArrayList<>();
+    private TextView errorTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,8 +56,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sortSpin.setOnItemSelectedListener(this);
         sortSpin.setAdapter(adapter);
 
-        loadMovies(this, "popular");
+        if (hasOnlineAccess()) {
+            loadMovies(this, "popular");
+        } else {
+            errorTextView = (TextView) findViewById(R.id.tv_no_network);
+            errorTextView.setVisibility(View.VISIBLE);
+            sortSpin.setVisibility(View.GONE);
+        }
 
+    }
+
+    /**
+     * Check if the app is online
+     * @return
+     */
+    public boolean hasOnlineAccess()
+    {
+        ConnectivityManager cm =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return netInfo != null && netInfo.isConnected();
     }
 
     /**
