@@ -14,6 +14,8 @@ import org.w3c.dom.Text;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
+    private final String TAG = MovieDetailActivity.class.toString();
+
     private Movie movie;
     private TextView movieTitleText;
     private TextView movieDateText;

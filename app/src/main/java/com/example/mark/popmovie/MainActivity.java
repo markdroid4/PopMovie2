@@ -30,8 +30,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static android.media.tv.TvContract.Programs.Genres.MOVIES;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private final String TAG = MainActivity.class.toString();
     private static final int GRID_COLUMNS = 2;
 
     private Spinner sortSpin;
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     public void loadMovies(Context context, String endPoint)
     {
-        Log.d("INFO", "LOAD MOVIES CALLED");
+        Log.d(TAG, "LOAD MOVIES CALLED");
         movies = new ArrayList<>();
         LoadMoviesTask getMovies = new LoadMoviesTask(context, endPoint);
         getMovies.execute();
@@ -90,13 +93,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
 
-        Log.d("INFO", "SPINNER SELECTED");
+        Log.d(TAG, "SPINNER SELECTED");
         String endPoint;
         String item = (String) adapterView.getItemAtPosition(pos);
         if (item.equals("Most Popular")) {
-            endPoint = "popular";
+            endPoint = getString(R.string.endpoint_most_popular);
         } else {
-            endPoint = "top_rated";
+            endPoint = getString(R.string.endpoint_top_rated);
         }
         loadMovies(this, endPoint);
     }
@@ -109,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         JSONObject obj = new JSONObject(json);
         JSONArray results = (JSONArray) obj.get("results");
-        Log.d("INFO", "Movies found: " + results.length());
+        Log.d(TAG, "Movies found: " + results.length());
 
         for (int i=0; i < results.length(); i++)
         {
@@ -176,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
          * @throws IOException Related to network and stream reading
          */
         public String getResponseFromHttpUrl(URL url) throws IOException {
-            Log.d("INFO", "Loading URL: " + url);
+            Log.d(TAG, "Loading URL: " + url);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             try {
                 InputStream in = urlConnection.getInputStream();
@@ -210,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 e.printStackTrace();
             }
 
-            Log.d("INFO", "returning json: " + result);
+            Log.d(TAG, "returning json: " + result);
 
             return result;
         }

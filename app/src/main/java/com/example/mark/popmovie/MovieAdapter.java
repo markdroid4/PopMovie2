@@ -15,11 +15,15 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import static android.os.Build.VERSION_CODES.M;
+
 /**
  * Created by mark on 1/11/17.
  */
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+
+    private final String TAG = MovieAdapter.class.toString();
 
     private Context context;
     private ArrayList<Movie> movies;
@@ -47,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
                     }
 
                     public void bind(Movie m) {
-                        Log.d("INFO", m.getImagePath());
+                        Log.d(TAG, m.getImagePath());
                         movie = m;
                         Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
                                 .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
