@@ -1,6 +1,5 @@
 package com.example.mark.popmovie;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -22,7 +21,6 @@ import com.example.mark.popmovie.model.Movie;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,9 +29,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
-
-import static android.R.string.no;
-import static android.view.View.GONE;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -56,9 +51,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         sortSpin.setOnItemSelectedListener(this);
         sortSpin.setAdapter(adapter);
 
-        if (hasOnlineAccess()) {
-            loadMovies(this, "popular");
-        } else {
+        if (!hasOnlineAccess()) {
+            // Spinner is selected as soon as it is loaded, no need to load here
+            //loadMovies(this, "popular");
             errorTextView = (TextView) findViewById(R.id.tv_no_network);
             errorTextView.setVisibility(View.VISIBLE);
             sortSpin.setVisibility(View.GONE);
@@ -85,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     public void loadMovies(Context context, String endPoint)
     {
+        Log.d("INFO", "LOAD MOVIES CALLED");
         movies = new ArrayList<>();
         LoadMoviesTask getMovies = new LoadMoviesTask(context, endPoint);
         getMovies.execute();
@@ -95,7 +91,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long id) {
 
         Log.d("INFO", "SPINNER SELECTED");
-        String endPoint="";
+        String endPoint;
         String item = (String) adapterView.getItemAtPosition(pos);
         if (item.equals("Most Popular")) {
             endPoint = "popular";
@@ -160,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         public URL buildUrl(String endPoint) {
             Uri builtUri = Uri.parse(TMDB_URL + endPoint).buildUpon()
                     .appendQueryParameter(PARAM_API, apiKey)
-                    //.appendQueryParameter(PARAM_SORT, sortBy)
                     .build();
 
             URL url = null;
