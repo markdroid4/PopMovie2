@@ -6,7 +6,7 @@ This app shows a simple list of popular movies or top rated movies. Clicking on 
 
 This app makes use of the [TMDB API](https://www.themoviedb.org/documentation/api)
 
-You will need to create your own key and place it in [keys.xml](PopMovie/app/src/main/res/values/keys.xml):
+You will need to create your own key and place it in [keys.xml](https://github.com/markdroid4/PopMovie/blob/master/app/src/main/res/values/keys.xml):
 
 ```xml
 <resources>
