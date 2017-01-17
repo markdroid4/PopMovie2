@@ -13,3 +13,8 @@ You will need to create your own key and place it in [keys.xml](https://github.c
     <string name="api_key">YOUR_API_KEY</string>
 </resources>
 ```
+
+# Future updates
+
+1. Add Actor list to detail screen
+2. Create Actor Detail screen with list of Movies they appear in
