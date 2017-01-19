@@ -30,12 +30,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static android.media.tv.TvContract.Programs.Genres.MOVIES;
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private final String TAG = MainActivity.class.toString();
-    private static final int GRID_COLUMNS = 2;
 
     private Spinner sortSpin;
     private RecyclerView recyclerView;
@@ -225,7 +222,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         @Override
         protected void onPostExecute(Object o) {
-            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, GRID_COLUMNS);
+            int grid_columns = getResources().getInteger(R.integer.gallery_columns);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(context, grid_columns);
             recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(gridLayoutManager);
