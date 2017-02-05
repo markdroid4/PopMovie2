@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -39,11 +40,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MovieAdapter movieAdapter;
     private ArrayList<Movie> movies = new ArrayList<>();
     private TextView errorTextView;
+    private Toolbar toolBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        toolBar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(toolBar);
+
         sortSpin = (Spinner) findViewById(R.id.spin_sort);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.sort_types, android.R.layout.simple_spinner_item);

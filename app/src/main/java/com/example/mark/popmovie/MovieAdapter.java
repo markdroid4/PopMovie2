@@ -37,34 +37,34 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-                class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-                {
-                    TextView textView;
-                    ImageView imageView;
-                    Movie movie;
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    {
+        TextView textView;
+        ImageView imageView;
+        Movie movie;
 
-                    public MovieViewHolder(View view)
-                    {
-                        super(view);
-                        imageView = (ImageView) view.findViewById(R.id.iv_movie_poster);
-                        view.setOnClickListener(this);
-                    }
+        public MovieViewHolder(View view)
+        {
+            super(view);
+            imageView = (ImageView) view.findViewById(R.id.iv_movie_poster);
+            view.setOnClickListener(this);
+        }
 
-                    public void bind(Movie m) {
-                        Log.d(TAG, m.getImagePath());
-                        movie = m;
-                        Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
-                                .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
-                                .into(imageView);
-                    }
+        public void bind(Movie m) {
+            Log.d(TAG, m.getImagePath());
+            movie = m;
+            Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
+                    .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
+                    .into(imageView);
+        }
 
-                    @Override
-                    public void onClick(View view) {
-                        Intent movieDetailIntent = new Intent(view.getContext(), MovieDetailActivity.class);
-                        movieDetailIntent.putExtra("MOVIE", movie);
-                        view.getContext().startActivity(movieDetailIntent);
-                    }
-                }
+        @Override
+        public void onClick(View view) {
+            Intent movieDetailIntent = new Intent(view.getContext(), MovieDetailActivity.class);
+            movieDetailIntent.putExtra("MOVIE", movie);
+            view.getContext().startActivity(movieDetailIntent);
+        }
+    }
 
 
 
