@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PopMovie</string>
+    <string name="app_name">PopMovie2</string>
     <string name="error_msg">No Internet connection found, please check your settings.</string>
     <string name="endpoint_top_rated">top_rated</string>
     <string name="endpoint_most_popular">popular</string>
