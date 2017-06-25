@@ -38,7 +38,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                 movieOverviewText.setText(movie.getOverview());
                 movieTitleText.setText(movie.getTitle() + " (Rating: " + movie.getRating() + ")");
                 movieDateText.setText(movie.getReleaseDate());
-                Picasso.with(this).load(movie.getImgPrefix("w500") + movie.getImagePath())
+                Picasso.with(this).load(movie.getImgPrefix("original") + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);
             }
