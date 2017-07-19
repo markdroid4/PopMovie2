@@ -3,7 +3,9 @@ package com.example.mark.popmovie.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,12 +15,19 @@ import java.util.List;
 public class Movie implements Parcelable {
 
     private String title;
+    private String movieId;
     private String rating;
+    private String year;
     private String releaseDate;
+
     private String imagePath;
+    private String trailerPath;
     private String overview;
     private final String IMAGE_PREFIX = "http://image.tmdb.org/t/p/";
-    //private List<String> actors;
+    //private List<Actor> actors;
+    //private List<String> trailers;
+    //private List<Review> reviews;
+    //private List<Genre> genres;
 
 
     /**
@@ -32,12 +41,16 @@ public class Movie implements Parcelable {
     }
 
     public Movie(String title, String rating, String imagePath, String overview,
-                 String releaseDate) {
+                 String releaseDate, String trailerPath) {
         this.title = title;
         this.rating = rating;
         this.imagePath = imagePath;
         this.overview = overview;
         this.releaseDate = releaseDate;
+        this.trailerPath = trailerPath;
+
+        year = releaseDate.substring(0,4);
+
     }
 
     public String getTitle() {
@@ -80,6 +93,10 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
+    public String getTrailerPath() { return trailerPath; }
+
+    public void setTrailerPath(String trailerPath) { this.trailerPath=trailerPath; }
+
     private Movie(Parcel in)
     {
         this.title = in.readString();
@@ -87,6 +104,8 @@ public class Movie implements Parcelable {
         this.imagePath = in.readString();
         this.overview = in.readString();
         this.releaseDate = in.readString();
+        this.year = in.readString();
+        this.movieId = in.readString();
         //this.actors = new ArrayList<>();
         //in.readTypedList(actors, );
     }
@@ -104,6 +123,8 @@ public class Movie implements Parcelable {
         parcel.writeString(imagePath);
         parcel.writeString(overview);
         parcel.writeString(releaseDate);
+        parcel.writeString(year);
+        parcel.writeString(movieId);
     }
 
     public final static Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
@@ -118,4 +139,21 @@ public class Movie implements Parcelable {
             return new Movie[0];
         }
     };
+
+    public String getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(String movieId) {
+        this.movieId = movieId;
+    }
+
+    public String getYear() {
+        return year;
+    }
+
+    public void setYear(String year) {
+        this.year = year;
+    }
+
 }

@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         JSONArray results = (JSONArray) obj.get("results");
         Log.d(TAG, "Movies found: " + results.length());
 
-        for (int i=0; i < results.length(); i++)
+        for (int i=0; i<results.length(); i++)
         {
             JSONObject jsonMovie = (JSONObject) results.get(i);
             String img = jsonMovie.getString("poster_path");
@@ -125,8 +125,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String overview = jsonMovie.getString("overview");
             String rating = jsonMovie.getString("vote_average");
             String releaseDate = jsonMovie.getString("release_date");
+            String movieId = jsonMovie.getString("id");
+            Log.d("DEBUG",jsonMovie.toString());
+            String trailerPath = "";
 
-            Movie movie = new Movie(title, rating, img, overview, releaseDate);
+            Movie movie = new Movie(title, rating, img, overview, releaseDate, trailerPath);
+            movie.setMovieId(movieId);
             movies.add(movie);
         }
         return movies;
