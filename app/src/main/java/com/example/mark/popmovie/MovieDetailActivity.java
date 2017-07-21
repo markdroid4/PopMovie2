@@ -9,9 +9,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -26,6 +27,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
+import static android.R.attr.key;
+import static android.R.attr.value;
+
 public class MovieDetailActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<String[]> {
 
@@ -35,9 +39,11 @@ public class MovieDetailActivity extends AppCompatActivity
     private Movie movie;
     private TextView movieTitleText;
     private TextView movieDateText;
+    private TextView movieRating;
     private TextView movieOverviewText;
     private TextView trailerHeader;
     private ImageView imageView;
+    private ImageView imageFavView;
     private ExpandableHeightListView trailerListView;
     TrailerListAdapter trailerListAdapter;
 
@@ -47,6 +53,7 @@ public class MovieDetailActivity extends AppCompatActivity
         setContentView(R.layout.activity_movie_detail);
         movieTitleText = (TextView) findViewById(R.id.tv_movie_title);
         movieDateText = (TextView) findViewById(R.id.tv_movie_date);
+        movieRating = (TextView) findViewById(R.id.tv_movie_rating);
         movieOverviewText = (TextView) findViewById(R.id.tv_overview);
         trailerHeader = (TextView) findViewById(R.id.tv_trailers);
         imageView = (ImageView) findViewById(R.id.iv_movie_detail_poster);
@@ -59,7 +66,8 @@ public class MovieDetailActivity extends AppCompatActivity
             movie = caller.getParcelableExtra("MOVIE");
             if (movie != null) {
                 movieOverviewText.setText(movie.getOverview());
-                movieTitleText.setText(movie.getTitle() + " (" + movie.getRating() + " / 10)");
+                movieTitleText.setText(movie.getTitle());
+                movieRating.setText(movie.getRating());
                 movieDateText.setText(movie.getYear());
                 Picasso.with(this).load(movie.getImgPrefix("original") + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
@@ -134,10 +142,21 @@ public class MovieDetailActivity extends AppCompatActivity
         //load up the UI with the contents
         trailerListAdapter = new TrailerListAdapter(this.getBaseContext(), data);
         trailerListView.setAdapter(trailerListAdapter);
+        trailerListView.setOnItemClickListener(trailerListAdapter);
     }
 
     @Override
     public void onLoaderReset(Loader<String[]> loader) {
+
+    }
+
+    /**
+     * Mark a movie as a fav
+     * @param v
+     */
+    public void favoriteClicked(View v)
+    {
+        Log.d("INFO", "fav star clicked");
 
     }
 
