@@ -45,6 +45,7 @@ public class MovieDetailActivity extends AppCompatActivity
     private ImageView imageView;
     private ImageView imageFavView;
     private ExpandableHeightListView trailerListView;
+    private ExpandableHeightListView reviewListView;
     TrailerListAdapter trailerListAdapter;
 
     @Override
@@ -58,7 +59,9 @@ public class MovieDetailActivity extends AppCompatActivity
         trailerHeader = (TextView) findViewById(R.id.tv_trailers);
         imageView = (ImageView) findViewById(R.id.iv_movie_detail_poster);
         trailerListView = (ExpandableHeightListView) findViewById(R.id.lv_trailers);
+        reviewListView = (ExpandableHeightListView) findViewById(R.id.lv_reviews);
         trailerListView.setExpanded(true);
+        reviewListView.setExpanded(true);
 
         Intent caller = getIntent();
         if (caller.hasExtra("MOVIE"))
@@ -119,6 +122,7 @@ public class MovieDetailActivity extends AppCompatActivity
                     url = new URL(urlString);
                     result = NetworkUtil.getResponseFromHttpUrl(url);
                     trailers = JSONHelper.createTrailerListFromJSON(result);
+
                 }
                 catch (IOException e)
                 {
@@ -157,7 +161,6 @@ public class MovieDetailActivity extends AppCompatActivity
     public void favoriteClicked(View v)
     {
         Log.d("INFO", "fav star clicked");
-
     }
 
 }

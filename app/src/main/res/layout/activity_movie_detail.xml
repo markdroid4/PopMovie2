@@ -110,5 +110,15 @@
             app:layout_constraintTop_toBottomOf="@+id/tv_trailers">
         </com.example.mark.popmovie.ExpandableHeightListView>
 
+        <com.example.mark.popmovie.ExpandableHeightListView
+            android:id="@+id/lv_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:padding="8dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/lv_trailers">
+        </com.example.mark.popmovie.ExpandableHeightListView>
+
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
