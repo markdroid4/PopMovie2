@@ -4,12 +4,14 @@ import android.util.Log;
 
 import com.example.mark.popmovie.MovieDetailActivity;
 import com.example.mark.popmovie.model.Movie;
+import com.example.mark.popmovie.model.MovieReview;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mark on 7/18/17.
@@ -49,18 +51,23 @@ public class JSONHelper {
      * @return
      * @throws JSONException
      */
-    public static ArrayList<String> getMovieReviewsListFromJSON(String json) throws JSONException
+    public static List<MovieReview> getMovieReviewsListFromJSON(String json) throws JSONException
     {
         JSONObject jsonObject = new JSONObject(json);
-        ArrayList<String> reviews = new ArrayList<>();
+        List<MovieReview> reviews = new ArrayList<>();
 
-        JSONObject videoObj = jsonObject.getJSONObject("reviews");
-        JSONArray videoReviews = videoObj.getJSONArray("results");
-        for (int i=0; i<videoReviews.length(); i++)
+        JSONObject reviewObj = jsonObject.getJSONObject("reviews");
+        JSONArray movieReviews = reviewObj.getJSONArray("results");
+        for (int i=0; i<movieReviews.length(); i++)
         {
-            JSONObject obj = (JSONObject) videoReviews.get(i);
-            String key = obj.getString("content");
-            reviews.add(key);
+            JSONObject obj = (JSONObject) movieReviews.get(i);
+            MovieReview review = new MovieReview(
+                    obj.getString("id"),
+                    obj.getString("author"),
+                    obj.getString("content"),
+                    obj.getString("url"));
+            reviews.add(review);
+            Log.d("INFO", review.getAuthor() + " " + review.getContent());
         }
 
         return reviews;

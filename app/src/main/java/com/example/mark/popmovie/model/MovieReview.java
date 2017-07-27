@@ -1,30 +1,28 @@
 package com.example.mark.popmovie.model;
 
-import android.os.Parcelable;
-
 /**
  * Created by mark on 7/22/17.
  */
 
 public class MovieReview /*implements Parcelable */{
 
-    private int id;
+    private String id;
     private String author;
     private String content;
     private String url;
 
-    public MovieReview(int id, String author, String content, String url) {
+    public MovieReview(String id, String author, String content, String url) {
         this.id = id;
         this.author = author;
         this.content = content;
         this.url = url;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
