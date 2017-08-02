@@ -77,8 +77,4 @@ public class NetworkUtil {
             urlConnection.disconnect();
         }
     }
-
-
-
-
 }

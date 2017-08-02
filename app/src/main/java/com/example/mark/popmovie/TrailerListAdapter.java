@@ -36,8 +36,6 @@ public class TrailerListAdapter extends ArrayAdapter<String> implements AdapterV
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = layoutInflater.inflate(R.layout.list_item, parent, false);
 
-        Log.d("INFO", "ADAPTER LOAD view for values[" + position + "] = " + values[position]);
-
         TextView tv = (TextView) rowView.findViewById(R.id.tv_trailer_list_item);
 
         tv.setText("Trailer #" + (position+1));

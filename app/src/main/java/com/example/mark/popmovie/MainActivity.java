@@ -1,6 +1,9 @@
 package com.example.mark.popmovie;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -17,7 +20,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.mark.popmovie.com.example.mark.popmovie.util.DBHelper;
 import com.example.mark.popmovie.model.Movie;
+import com.example.mark.popmovie.model.MovieReaderContract;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +36,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import static android.media.tv.TvContract.Programs.Genres.MOVIES;
+import static com.example.mark.popmovie.model.MovieReaderContract.MovieEntry.TABLE_NAME;
+
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private final String TAG = MainActivity.class.toString();
@@ -41,11 +49,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ArrayList<Movie> movies = new ArrayList<>();
     private TextView errorTextView;
     private Toolbar toolBar;
+    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        db = new DBHelper(getBaseContext()).getReadableDatabase();
+        Log.d("INFO", "DBVERSION: " + db.getVersion());
+        Log.d("INFO", "DBPATH: " + db.getPath());
+       // db.execSQL("DROP TABLE MOVIES");
+
+        Cursor c = getMovieFavorites(db);
+        Log.d(TAG, "************************MOVIES IN DB: " + c.getCount());
 
         toolBar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolBar);
@@ -64,7 +81,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             errorTextView.setVisibility(View.VISIBLE);
             sortSpin.setVisibility(View.GONE);
         }
+    }
 
+    public Cursor getMovieFavorites(SQLiteDatabase database)
+    {
+       return database.query(MovieReaderContract.MovieEntry.TABLE_NAME,
+               null,
+               null,
+               null,
+               null,
+               null,
+               MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE
+       );
     }
 
     /**
@@ -86,7 +114,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     public void loadMovies(Context context, String endPoint)
     {
-        Log.d(TAG, "LOAD MOVIES CALLED");
         movies = new ArrayList<>();
         LoadMoviesTask getMovies = new LoadMoviesTask(context, endPoint);
         getMovies.execute();
@@ -126,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String rating = jsonMovie.getString("vote_average");
             String releaseDate = jsonMovie.getString("release_date");
             String movieId = jsonMovie.getString("id");
-            Log.d("DEBUG",jsonMovie.toString());
+            //Log.d("DEBUG",jsonMovie.toString());
             String trailerPath = "";
 
             Movie movie = new Movie(title, rating, img, overview, releaseDate, trailerPath);

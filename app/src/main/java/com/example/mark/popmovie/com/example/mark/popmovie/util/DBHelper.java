@@ -3,6 +3,7 @@ package com.example.mark.popmovie.com.example.mark.popmovie.util;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.mark.popmovie.model.MovieReaderContract;
 
@@ -13,7 +14,7 @@ import com.example.mark.popmovie.model.MovieReaderContract;
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "movies.db";
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 4;
 
     public DBHelper(Context context)
     {
@@ -27,8 +28,8 @@ public class DBHelper extends SQLiteOpenHelper {
                 MovieReaderContract.MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 MovieReaderContract.MovieEntry.COLUMN_NAME_ID + " TEXT NOT NULL, " +
                 MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE + " TEXT, " +
-                //MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE = "image"
-                MovieReaderContract.MovieEntry.COLUMN_NAME_FAV + " BOOLEAN, " +
+                MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE_PATH + " TEXT, " +
+                MovieReaderContract.MovieEntry.COLUMN_NAME_FAV + " TINYINT, " +
                 MovieReaderContract.MovieEntry.COLUMN_NAME_SUMMARY + " TEXT, " +
                 MovieReaderContract.MovieEntry.COLUMN_NAME_RATING + " TEXT, " +
                 MovieReaderContract.MovieEntry.COLUMN_NAME_RELEASE_DATE + " TEXT, " +
@@ -39,6 +40,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        Log.d("INFO", "onUpgrade called");
         final String SQL_UPGRADE = "DROP TABLE IF EXISTS " + MovieReaderContract.MovieEntry.TABLE_NAME;
         sqLiteDatabase.execSQL(SQL_UPGRADE);
         onCreate(sqLiteDatabase);

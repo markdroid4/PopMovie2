@@ -41,8 +41,6 @@ public class ReviewListAdapter extends ArrayAdapter<MovieReview> implements Adap
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = layoutInflater.inflate(R.layout.review_list_item, parent, false);
 
-        Log.d("INFO", "REVIEWS ADAPTER LOAD view for values for values[" + position + "] = ");// + values.get(position));
-
         TextView tv = (TextView) rowView.findViewById(R.id.tv_review_text);
 
         tv.setText("Review #" + (position+1));

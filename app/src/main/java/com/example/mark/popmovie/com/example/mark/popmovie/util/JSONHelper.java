@@ -67,7 +67,6 @@ public class JSONHelper {
                     obj.getString("content"),
                     obj.getString("url"));
             reviews.add(review);
-            Log.d("INFO", review.getAuthor() + " " + review.getContent());
         }
 
         return reviews;

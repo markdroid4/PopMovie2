@@ -51,7 +51,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         public void bind(Movie m) {
-            Log.d(TAG, m.getImagePath());
+            //Log.d(TAG, m.getImagePath());
             movie = m;
             Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
                     .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
