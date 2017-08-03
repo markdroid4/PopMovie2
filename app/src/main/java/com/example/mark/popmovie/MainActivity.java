@@ -56,14 +56,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        db = new DBHelper(getBaseContext()).getReadableDatabase();
-        Log.d("INFO", "DBVERSION: " + db.getVersion());
-        Log.d("INFO", "DBPATH: " + db.getPath());
-       // db.execSQL("DROP TABLE MOVIES");
-
-        Cursor c = getMovieFavorites(db);
-        Log.d(TAG, "************************MOVIES IN DB: " + c.getCount());
-
         toolBar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolBar);
 
