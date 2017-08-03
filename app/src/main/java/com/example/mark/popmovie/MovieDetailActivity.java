@@ -30,8 +30,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 
-import static com.example.mark.popmovie.R.drawable.ic_star_black_24dp;
-
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -82,7 +80,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             if (movie != null) {
                 movieOverviewText.setText(movie.getOverview());
                 movieTitleText.setText(movie.getTitle());
-                movieRating.setText(movie.getRating());
+                movieRating.setText(movie.getRating() + "/10");
                 movieDateText.setText(movie.getYear());
                 Picasso.with(this).load(movie.getImgPrefix("original") + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
