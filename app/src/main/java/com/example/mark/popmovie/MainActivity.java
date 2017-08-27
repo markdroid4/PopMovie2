@@ -1,6 +1,5 @@
 package com.example.mark.popmovie;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -8,6 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,9 +21,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.mark.popmovie.com.example.mark.popmovie.util.DBHelper;
 import com.example.mark.popmovie.model.Movie;
+import com.example.mark.popmovie.model.MovieContentProvider;
 import com.example.mark.popmovie.model.MovieReaderContract;
 
 import org.json.JSONArray;
@@ -36,24 +40,27 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import static android.media.tv.TvContract.Programs.Genres.MOVIES;
-import static com.example.mark.popmovie.model.MovieReaderContract.MovieEntry.TABLE_NAME;
+import static java.security.AccessController.getContext;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String TAG = MainActivity.class.toString();
+    private final int ID_CURSOR_LOADER = 99;
 
     private Spinner sortSpin;
     private RecyclerView recyclerView;
     private MovieAdapter movieAdapter;
+    private MovieCursorAdapter movieCursorAdapter;
     private ArrayList<Movie> movies = new ArrayList<>();
     private TextView errorTextView;
     private Toolbar toolBar;
-    private SQLiteDatabase db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d("TAG", "ACTIVITY onCreate");
         setContentView(R.layout.activity_main);
 
         toolBar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -75,16 +82,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public Cursor getMovieFavorites(SQLiteDatabase database)
-    {
-       return database.query(MovieReaderContract.MovieEntry.TABLE_NAME,
-               null,
-               null,
-               null,
-               null,
-               null,
-               MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE
-       );
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+
+        Log.d("TAG", "LOADER onLoaderFinished");
+        if (recyclerView == null) {
+            int grid_columns = getResources().getInteger(R.integer.gallery_columns);
+            GridLayoutManager gridLayoutManager = new GridLayoutManager(getBaseContext(), grid_columns);
+            recyclerView = (RecyclerView) findViewById(R.id.rv_movies);
+            recyclerView.setHasFixedSize(true);
+            recyclerView.setLayoutManager(gridLayoutManager);
+        }
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+            Log.d("INFO", "cursor First " + cursor.getString(
+                            cursor.getColumnIndex(
+                                MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE)));
+            movieCursorAdapter = new MovieCursorAdapter(getBaseContext(), cursor);
+            recyclerView.setAdapter(movieCursorAdapter);
+        }
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
+        Log.d("TAG", "LOADER onCreateLoader");
+        String[] projection = new String[]{"id", "title"};
+
+        Loader loader = new CursorLoader(this,
+                MovieContentProvider.getContentUri(),
+                null,
+                null,
+                null,
+                null);
+        return loader;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        Log.d("TAG", "LOADER onLoaderReset");
+        if (movieCursorAdapter!=null) {
+            //movieCursorAdapter.swapCursor();
+        }
+
     }
 
     /**
@@ -120,10 +161,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String item = (String) adapterView.getItemAtPosition(pos);
         if (item.equals("Most Popular")) {
             endPoint = getString(R.string.endpoint_most_popular);
-        } else {
+            loadMovies(this, endPoint);
+        } else if (item.equals("Top Rated")) {
             endPoint = getString(R.string.endpoint_top_rated);
+            loadMovies(this, endPoint);
         }
-        loadMovies(this, endPoint);
+        else if (item.equals("Favorites")) {
+            Log.d(TAG, "SPINNER FAVORITES SELECTED");
+            getSupportLoaderManager().initLoader(ID_CURSOR_LOADER, null, this);
+        }
     }
 
     @Override
@@ -145,10 +191,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             String rating = jsonMovie.getString("vote_average");
             String releaseDate = jsonMovie.getString("release_date");
             String movieId = jsonMovie.getString("id");
-            //Log.d("DEBUG",jsonMovie.toString());
-            String trailerPath = "";
 
-            Movie movie = new Movie(title, rating, img, overview, releaseDate, trailerPath);
+            Movie movie = new Movie(title, rating, img, overview, releaseDate, 0);
             movie.setMovieId(movieId);
             movies.add(movie);
         }

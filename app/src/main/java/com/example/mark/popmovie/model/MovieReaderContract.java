@@ -1,5 +1,6 @@
 package com.example.mark.popmovie.model;
 
+import android.net.Uri;
 import android.provider.BaseColumns;
 
 /**
@@ -8,11 +9,16 @@ import android.provider.BaseColumns;
 
 public class MovieReaderContract {
 
-    private MovieReaderContract() {}
 
+
+    private MovieReaderContract() {}
 
     public class MovieEntry implements BaseColumns
     {
+        public static final String CONTENT_AUTHORITY = "com.example.mark.popmovie";
+        public static final String CONTENT_PATH = "movies";
+
+
         public static final String TABLE_NAME = "movies";
         public static final String COLUMN_NAME_ID = "id";
         public static final String COLUMN_NAME_TITLE = "title";

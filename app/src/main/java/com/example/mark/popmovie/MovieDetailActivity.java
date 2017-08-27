@@ -4,8 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.Loader;
@@ -20,6 +22,7 @@ import com.example.mark.popmovie.com.example.mark.popmovie.util.DBHelper;
 import com.example.mark.popmovie.com.example.mark.popmovie.util.JSONHelper;
 import com.example.mark.popmovie.com.example.mark.popmovie.util.NetworkUtil;
 import com.example.mark.popmovie.model.Movie;
+import com.example.mark.popmovie.model.MovieContentProvider;
 import com.example.mark.popmovie.model.MovieReaderContract;
 import com.example.mark.popmovie.model.MovieReview;
 import com.squareup.picasso.Picasso;
@@ -207,7 +210,15 @@ public class MovieDetailActivity extends AppCompatActivity {
             }
         };
 
-        insertMovieInDb();
+        // Insert will fail if movie already in db
+        try {
+            insertMovieContentProvider();
+        }
+        catch (SQLiteConstraintException sce)
+        {
+            Log.d("INFO", sce.toString());
+        }
+
         int fav = getFavorite();
         setFavView(fav);
 
@@ -227,6 +238,24 @@ public class MovieDetailActivity extends AppCompatActivity {
         } else {
             loaderManager.restartLoader(LOADER_REVIEW_ID, savedInstanceState, reviewsLoaderCallback);
         }
+    }
+
+    private void insertMovieContentProvider()
+    {
+        ContentValues insertValues = new ContentValues();
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_ID, movie.getMovieId());
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE, movie.getTitle());
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE_PATH, movie.getImagePath());
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV, 0);
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_SUMMARY, movie.getOverview());
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_RATING, movie.getRating());
+        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, movie.getReleaseDate());
+
+        getContentResolver().insert(
+                MovieContentProvider.getContentUri(),
+                insertValues);
+
+        dumpDB();
     }
 
     private void insertMovieInDb()
@@ -266,6 +295,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             );
 
             Log.d("INFO", "INSERT METHOD - Inserted movie, rows=" + rows);
+
             dbInsert.close();
         }
         cursor.close();
@@ -353,23 +383,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         else if (fav == 1)
             fav=0;
 
-        Log.d("INFO", "inside toggleFavorite setting fav to "+fav+" for movieId " + movie.getMovieId());
-        SQLiteDatabase db = new DBHelper(getBaseContext()).getWritableDatabase();
+        Log.d("INFO", "inside toggleFavorite updating fav to "+fav+" for movieId " + movie.getMovieId());
 
-        ContentValues insertValues = new ContentValues();
-        insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV, fav);
-        //TODO: add all columns here for fav display on MainActivity
+        ContentValues updateValues = new ContentValues();
+        updateValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV, fav);
+
+
+        getContentResolver().update(
+                MovieContentProvider.buildContentUri(movie.getMovieId()),
+                updateValues,
+                "id=?",
+                new String[]{""+movie.getMovieId()});
 
         setFavView(fav);
-
-        int rows = db.update(MovieReaderContract.MovieEntry.TABLE_NAME,
-                insertValues,
-                "ID=?",
-                new String[]{movie.getMovieId()}
-                );
-
-        Log.d("INFO", "Update fav, rows=" + rows);
-        db.close();
     }
 
     private void setFavView(int fav)

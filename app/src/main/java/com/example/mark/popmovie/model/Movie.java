@@ -21,9 +21,9 @@ public class Movie implements Parcelable {
     private String releaseDate;
 
     private String imagePath;
-    private String trailerPath;
     private String overview;
     private final String IMAGE_PREFIX = "http://image.tmdb.org/t/p/";
+    private int favorite;
     //private List<Actor> actors;
     //private List<String> trailers;
     //private List<Review> reviews;
@@ -40,17 +40,25 @@ public class Movie implements Parcelable {
         return IMAGE_PREFIX + size;
     }
 
+    public Movie() {}
+
     public Movie(String title, String rating, String imagePath, String overview,
-                 String releaseDate, String trailerPath) {
+                 String releaseDate, int favorite) {
         this.title = title;
         this.rating = rating;
         this.imagePath = imagePath;
         this.overview = overview;
         this.releaseDate = releaseDate;
-        this.trailerPath = trailerPath;
-
+        this.favorite = favorite;
         year = releaseDate.substring(0,4);
+    }
 
+    public int getFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(int favorite) {
+        this.favorite = favorite;
     }
 
     public String getTitle() {
@@ -93,10 +101,6 @@ public class Movie implements Parcelable {
         this.overview = overview;
     }
 
-    public String getTrailerPath() { return trailerPath; }
-
-    public void setTrailerPath(String trailerPath) { this.trailerPath=trailerPath; }
-
     private Movie(Parcel in)
     {
         this.title = in.readString();
@@ -106,8 +110,7 @@ public class Movie implements Parcelable {
         this.releaseDate = in.readString();
         this.year = in.readString();
         this.movieId = in.readString();
-        //this.actors = new ArrayList<>();
-        //in.readTypedList(actors, );
+        this.favorite = in.readInt();
     }
 
     @Override
@@ -125,6 +128,7 @@ public class Movie implements Parcelable {
         parcel.writeString(releaseDate);
         parcel.writeString(year);
         parcel.writeString(movieId);
+        parcel.writeInt(favorite);
     }
 
     public final static Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>()
