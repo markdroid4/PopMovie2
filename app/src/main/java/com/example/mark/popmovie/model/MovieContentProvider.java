@@ -7,7 +7,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +15,6 @@ import android.util.Log;
 import com.example.mark.popmovie.com.example.mark.popmovie.util.DBHelper;
 
 import static android.R.attr.id;
-import static android.os.Build.VERSION_CODES.M;
 import static android.util.Log.d;
 import static com.example.mark.popmovie.model.MovieReaderContract.MovieEntry.CONTENT_AUTHORITY;
 import static com.example.mark.popmovie.model.MovieReaderContract.MovieEntry.CONTENT_PATH;
@@ -60,8 +58,6 @@ public class MovieContentProvider extends ContentProvider {
                 .build();
     }
 
-
-
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
@@ -70,30 +66,23 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public boolean onCreate() {
-        d("INFO", "CP onCreate - writeable db");
         db = new DBHelper(getContext()).getWritableDatabase();
         return true;
     }
-
-
-
-
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues contentValues, @Nullable String s, @Nullable String[] strings) {
 
         final SQLiteDatabase db = new DBHelper(getContext()).getWritableDatabase();
         int match = sUriMatcher.match(uri);
-        Log.d("INFO", "UPDATE URI MATCH =" + match);
+        int id = 0;
         switch(match) {
             case MOVIE_WITH_ID:
-                long id = db.update(MovieReaderContract.MovieEntry.TABLE_NAME,
+                id = db.update(MovieReaderContract.MovieEntry.TABLE_NAME,
                                     contentValues,
                                     s,
                                     strings);
-                if(id > 0) {
-                    Log.d("INFO", id + " rows updated");
-                } else {
+                if(id < 0) {
                     throw new SQLException("Failed to update row  " + uri);
                 }
                 break;
@@ -101,13 +90,9 @@ public class MovieContentProvider extends ContentProvider {
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        //getContext().getContentResolver().notifyChange(uri, null);
+        getContext().getContentResolver().notifyChange(uri, null);
         return id;
     }
-
-
-
-
 
     @Nullable
     @Override
