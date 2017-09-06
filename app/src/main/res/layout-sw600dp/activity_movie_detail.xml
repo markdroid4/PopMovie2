@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/iv_movie_detail_poster"
             android:layout_width="match_parent"
-            android:layout_height="450dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="top"
             android:scaleType="fitXY"
             app:layout_constraintRight_toRightOf="parent"
@@ -95,7 +95,7 @@
             android:textColor="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@+id/tv_overview"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="match_parent"
+            android:layout_width="368dp"
             android:layout_height="wrap_content" />
 
         <com.example.mark.popmovie.ExpandableHeightListView
@@ -115,11 +115,11 @@
             android:textColor="@color/colorPrimary"
             app:layout_constraintTop_toBottomOf="@+id/lv_trailers"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:layout_width="match_parent"
+            android:layout_width="368dp"
             android:layout_height="wrap_content" />
 
         <com.example.mark.popmovie.ExpandableHeightListView
-            android:id="@+id/lv_reviews"
+                android:id="@+id/lv_reviews"
             android:layout_width="368dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

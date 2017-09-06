@@ -31,6 +31,7 @@ import org.json.JSONException;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -85,7 +86,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 movieTitleText.setText(movie.getTitle());
                 movieRating.setText(movie.getRating() + "/10");
                 movieDateText.setText(movie.getYear());
-                Picasso.with(this).load(movie.getImgPrefix("original") + movie.getImagePath())
+                //"w92", "w154", "w185", "w342", "w500", "w780", or "original"
+                Picasso.with(this).load(movie.getImgPrefix(getResources().getString(R.string.image_size)) + movie.getImagePath())
                         .placeholder(R.mipmap.ic_launcher)
                         .into(imageView);
                 trailerHeader.setText("Movie Trailers:");
@@ -122,7 +124,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                             url = new URL(urlString);
                             result = NetworkUtil.getResponseFromHttpUrl(url);
                             trailers = JSONHelper.createTrailerListFromJSON(result);
-
                         }
                         catch (IOException e)
                         {
@@ -142,8 +143,16 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             @Override
             public void onLoadFinished(Loader loader, String[] data) {
-                //load up the UI with the contents
-                trailerListAdapter = new TrailerListAdapter(getBaseContext(), data);
+                // Only show up to 2 trailers
+                String[] topTwo;
+                if (data.length<3) {
+                    topTwo = data;
+                } else {
+                    topTwo = new String[] {data[0], data[1]};
+                }
+
+                // Load up the UI with the contents
+                trailerListAdapter = new TrailerListAdapter(getBaseContext(), topTwo);
                 trailerListView.setAdapter(trailerListAdapter);
                 trailerListView.setOnItemClickListener(trailerListAdapter);
             }
@@ -198,8 +207,17 @@ public class MovieDetailActivity extends AppCompatActivity {
 
             @Override
             public void onLoadFinished(Loader<List<MovieReview>> loader, List<MovieReview> data) {
-                //load up the UI with the contents
-                reviewListAdapter = new ReviewListAdapter(getBaseContext(), data);
+                // Only show up to 2 trailers
+                List<MovieReview> topTwo = new ArrayList<>();
+                if (data.size()<3) {
+                    topTwo = data;
+                } else {
+                    topTwo.add(data.get(0));
+                    topTwo.add(data.get(1));
+                }
+
+                // Load up the UI with the contents
+                reviewListAdapter = new ReviewListAdapter(getBaseContext(), topTwo);
                 reviewListView.setAdapter(reviewListAdapter);
                 reviewListView.setOnItemClickListener(reviewListAdapter);
             }
@@ -222,8 +240,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         int fav = getFavorite();
         setFavView(fav);
 
-        //get loader if it already exists
-        //init loader if not loaded yet
+        // Get loader if it already exists
+        // Init loader if not loaded yet
         Loader<String[]> trailerLoader = loaderManager.getLoader(LOADER_TRAILER_ID);
         Loader<List<MovieReview>> reviewLoader = loaderManager.getLoader(LOADER_REVIEW_ID);
 
@@ -255,53 +273,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                 MovieContentProvider.getContentUri(),
                 insertValues);
 
-        dumpDB();
+        //dumpDB();
     }
-
-    private void insertMovieInDb()
-    {
-        SQLiteDatabase db = new DBHelper(getBaseContext()).getWritableDatabase();
-        Cursor cursor = db.query(MovieReaderContract.MovieEntry.TABLE_NAME,
-                null,
-                "ID=?",
-                new String[] {movie.getMovieId()},
-                null,
-                null,
-                MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE
-        );
-
-        if (cursor!=null && cursor.getCount()>0) {
-            //movie already in db
-            //do nothing
-            Log.d("INFO", "INSERT METHOD - Movie already in DB");
-        }
-        else {
-            //add movie to db
-            Log.d("INFO", "Adding new movie to db: " + movie.getTitle());
-            SQLiteDatabase dbInsert = new DBHelper(getBaseContext()).getWritableDatabase();
-
-            ContentValues insertValues = new ContentValues();
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_ID, movie.getMovieId());
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE, movie.getTitle());
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE_PATH, movie.getImagePath());
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV, 0);
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_SUMMARY, movie.getOverview());
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_RATING, movie.getRating());
-            insertValues.put(MovieReaderContract.MovieEntry.COLUMN_NAME_RELEASE_DATE, movie.getReleaseDate());
-
-            long rows = dbInsert.insert(MovieReaderContract.MovieEntry.TABLE_NAME,
-                    null,
-                    insertValues
-            );
-
-            Log.d("INFO", "INSERT METHOD - Inserted movie, rows=" + rows);
-
-            dbInsert.close();
-        }
-        cursor.close();
-        db.close();
-    }
-
 
     private int getFavorite()
     {
@@ -332,36 +305,36 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void dumpDB()
-    {
-        SQLiteDatabase db = new DBHelper(getBaseContext()).getReadableDatabase();
-        Cursor cursor = db.query(MovieReaderContract.MovieEntry.TABLE_NAME,
-                null,
-                null,
-                null,
-                null,
-                null,
-                MovieReaderContract.MovieEntry.COLUMN_NAME_TIMESTAMP
-        );
-
-        if (cursor != null && cursor.getCount()>0) {
-            Log.d("INFO", "DB DUMP movies= " + cursor.getCount());
-
-            while (cursor.moveToNext()) {
-                String title = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE));
-                String movieId = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_ID));
-                String imagePath = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE_PATH));
-                int fav = cursor.getInt(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV));
-                Log.d("INFO", "Title: " + title + ", ID: " + movieId + " img: " + imagePath + ", fav: " + fav);
-            }
-
-            cursor.close();
-        }
-        else {
-            Log.d("INFO", "DB empty");
-        }
-        db.close();
-    }
+//    private void dumpDB()
+//    {
+//        SQLiteDatabase db = new DBHelper(getBaseContext()).getReadableDatabase();
+//        Cursor cursor = db.query(MovieReaderContract.MovieEntry.TABLE_NAME,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null,
+//                MovieReaderContract.MovieEntry.COLUMN_NAME_TIMESTAMP
+//        );
+//
+//        if (cursor != null && cursor.getCount()>0) {
+//            Log.d("INFO", "DB DUMP movies= " + cursor.getCount());
+//
+//            while (cursor.moveToNext()) {
+//                String title = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE));
+//                String movieId = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_ID));
+//                String imagePath = cursor.getString(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_IMAGE_PATH));
+//                int fav = cursor.getInt(cursor.getColumnIndex(MovieReaderContract.MovieEntry.COLUMN_NAME_FAV));
+//                Log.d("INFO", "Title: " + title + ", ID: " + movieId + " img: " + imagePath + ", fav: " + fav);
+//            }
+//
+//            cursor.close();
+//        }
+//        else {
+//            Log.d("INFO", "DB empty");
+//        }
+//        db.close();
+//    }
 
     /**
      * Mark a movie as a fav
@@ -373,7 +346,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         int fav = getFavorite();
         Log.d("INFO", "getFavorite()=" + fav);
         toggleFavorite(fav);
-        dumpDB();
+        //dumpDB();
     }
 
     private void toggleFavorite(int fav)

@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d("TAG", "ACTIVITY onCreate");
         setContentView(R.layout.activity_main);
 
         toolBar = (Toolbar) findViewById(R.id.my_toolbar);
@@ -75,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         if (!hasOnlineAccess()) {
             // Spinner is selected as soon as it is loaded, no need to load here
-            //loadMovies(this, "popular");
             errorTextView = (TextView) findViewById(R.id.tv_no_network);
             errorTextView.setVisibility(View.VISIBLE);
             sortSpin.setVisibility(View.GONE);
@@ -108,14 +106,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
         Log.d("TAG", "LOADER onCreateLoader");
-        String[] projection = new String[]{"id", "title"};
+
+        String selection = "fav=?";
+        String[] selectionArgs = new String[]{"1"};
 
         Loader loader = new CursorLoader(this,
                 MovieContentProvider.getContentUri(),
                 null,
-                null,
-                null,
-                null);
+                selection,
+                selectionArgs,
+                MovieReaderContract.MovieEntry.COLUMN_NAME_TITLE);
         return loader;
     }
 

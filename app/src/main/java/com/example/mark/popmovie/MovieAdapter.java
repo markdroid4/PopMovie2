@@ -37,9 +37,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     }
 
 
-    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
-    {
-        TextView textView;
+    class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         ImageView imageView;
         Movie movie;
 
@@ -51,9 +49,8 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         }
 
         public void bind(Movie m) {
-            //Log.d(TAG, m.getImagePath());
             movie = m;
-            Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath())
+            Picasso.with(context).load(m.getImgPrefix("w342") + m.getImagePath()) // was w342
                     .placeholder(R.mipmap.ic_launcher) //will not work without placeholder set -??
                     .into(imageView);
         }
@@ -81,7 +78,6 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
      */
     @Override
     public MovieViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View inflatedView = LayoutInflater.
                 from(parent.getContext()).
                 inflate(R.layout.tv_movie, parent, false);
